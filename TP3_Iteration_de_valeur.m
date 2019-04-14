@@ -5,7 +5,7 @@
 % T: Fonction de Transition (etat debut, action genere, etat depart)
 % R: Recompense
 
-epsilon = 0.01;
+epsilon = 0.04;
 NbrMaxIterations = 20;
 
 Map_plan2node = reshape((1:nbr),RowMax,ColMax);
@@ -21,10 +21,10 @@ U(:,1)=R(:);
 AfficheUtilites(reshape(U(:,end),RowMax,ColMax),Map_plan2node,0); pause();
 
 % valeur d'escompte
-escompte = 1; % gamma
-
+escompte = 0.8; % gamma
 
 for j = 1 : NbrMaxIterations-1
+    %j
     for  i = 1:nbr % s cases
         % si l'utilite de la case doit rester fixe, on conserve la precedente
         if ismember(i,FixedNodes)
@@ -34,7 +34,7 @@ for j = 1 : NbrMaxIterations-1
             % puis calculer le gain potentiel d'utilite GainU(a) engendre pour chaque action a
             for a = 1:length(A)
                 for h = 1:nbr
-                    GainU(a) = GainU(a) + T( i, a, h ) * U(h,i);
+                    GainU(a) = GainU(a) + T( i, a, h ) * U(h,j);
                 end
             end
             % puis mettre à jour l'utilite U(i,j+1) de la case i en considerant l'action offrant l'utilite maximale}  
@@ -51,10 +51,9 @@ for j = 1 : NbrMaxIterations-1
 end
 
 % Recherche de la politique optimale
+Uf = U(:,j+1); % prise en compte des dernieres valeurs d'utilite
 
-GainU = zeros(1,length(A));
-
-Uf = U(:,j); % prise en compte des dernieres valeurs d'utilite
+Politique = zeros(1,nbr);
 
 % recherche de la politique optimale pour chaque case
 for  i = 1:nbr % s cases
@@ -71,6 +70,9 @@ for  i = 1:nbr % s cases
             % Determiner l'action  associee au gain d'utilite maximum  
         end
         a_best = find(GainU==max(GainU));
+        if norm(size(a_best))>1
+            a_best = a_best(1);
+        end
         Politique(i) = a_best;
     end
 end

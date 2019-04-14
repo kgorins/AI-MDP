@@ -22,8 +22,10 @@ figure(1), imagesc(Plan), colormap gray, colorbar, axis square, grid on, title('
 %% Definition des recompenses
 
 R = -0.04*ones(RowMax,ColMax); % cases standards
+%R = -0.5*ones(RowMax,ColMax); % Q1
 R(1,4) = 1; % case objectif
 R(2,4) = -1; % cas à eviter
+%R(11) = 1; % Q1
 
 % affichage des recompenses
 AfficheRecompences(R,Map_plan2node);
